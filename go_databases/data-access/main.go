@@ -46,18 +46,28 @@ func main() {
 		log.Fatal(e)
 	}
 
-	var a Album
-	a, e = albumByID(2)
+	aId, e := addAlbum(Album{
+		Title:  "Substance",
+		Artist: "New Order",
+		Price:  14.49,
+	})
 	if e != nil {
 		log.Fatal(e)
 	}
 
-	fmt.Printf("Album found: %v\n", a)
+	var a Album
+	a, e = albumByID(aId)
+	if e != nil {
+		log.Fatal(e)
+	}
+
+	fmt.Printf("Album added: %v\n", a)
 	fmt.Printf("Albums found: %v\n", albums)
 }
 
 func albumsByArtist(name string) ([]Album, error) {
 	var albums []Album
+	var e error
 
 	rows, e := db.Query("SELECT * FROM album WHERE artist = ?", name)
 	if e != nil {
@@ -93,4 +103,24 @@ func albumByID(id int64) (Album, error) {
 	}
 
 	return a, nil
+}
+
+func addAlbum(a Album) (int64, error) {
+	var e error
+	result, e := db.Exec(
+		"INSERT INTO album (title, artist, price) VALUES (?, ?, ?)",
+		a.Title,
+		a.Artist,
+		a.Price,
+	)
+	if e != nil {
+		return 0, fmt.Errorf("addAlbum: %v", e)
+	}
+
+	id, e := result.LastInsertId()
+	if e != nil {
+		return 0, fmt.Errorf("addAlbum: %v", e)
+	}
+
+	return id, nil
 }
