@@ -46,6 +46,13 @@ func main() {
 		log.Fatal(e)
 	}
 
+	var a Album
+	a, e = albumByID(2)
+	if e != nil {
+		log.Fatal(e)
+	}
+
+	fmt.Printf("Album found: %v\n", a)
 	fmt.Printf("Albums found: %v\n", albums)
 }
 
@@ -72,4 +79,18 @@ func albumsByArtist(name string) ([]Album, error) {
 	}
 
 	return albums, nil
+}
+
+func albumByID(id int64) (Album, error) {
+	var a Album
+
+	row := db.QueryRow("SELECT * FROM album WHERE id = ?", id)
+	if e := row.Scan(&a.ID, &a.Title, &a.Artist, &a.Price); e != nil {
+		if e == sql.ErrNoRows {
+			return a, fmt.Errorf("albumsByID %d: no such album", id)
+		}
+		return a, fmt.Errorf("albumsByID %d: %v", id, e)
+	}
+
+	return a, nil
 }
