@@ -23,14 +23,27 @@ var albums = []Album{
 func main() {
 	router := gin.Default()
 	router.GET("/albums", getAlbums) // pass function rather than function result
-	router.GET("/albums/:id", getAlbumByID)
 	router.POST("/albums", postAlbums)
+	router.GET("/albums/:id", getAlbumByID)
+	router.DELETE("/albums/delete/:id", deleteAlbumByID)
 	router.Run("localhost:8080")
 }
 
 // ptr to context
 func getAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
+}
+
+func postAlbums(c *gin.Context) {
+	var newAlbum Album
+
+	// pass ref
+	if e := c.BindJSON(&newAlbum); e != nil {
+		fmt.Errorf("Failed to POST: %e", e)
+	}
+
+	albums = append(albums, newAlbum)
+	c.IndentedJSON(http.StatusCreated, newAlbum)
 }
 
 func getAlbumByID(c *gin.Context) {
@@ -46,14 +59,21 @@ func getAlbumByID(c *gin.Context) {
 	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
 }
 
-func postAlbums(c *gin.Context) {
-	var newAlbum Album
+func deleteAlbumByID(c *gin.Context) {
+	id := c.Param("id")
 
-	// pass ref
-	if e := c.BindJSON(&newAlbum); e != nil {
-		fmt.Errorf("Failed to POST: %e", e)
+	index := -1
+	for i, a := range albums {
+		if a.ID == id {
+			index = i
+			break
+		}
 	}
 
-	albums = append(albums, newAlbum)
-	c.IndentedJSON(http.StatusCreated, newAlbum)
+	if index >= 0 {
+		albums = append(albums[:index], albums[index+1:]...)
+		c.Status(http.StatusNoContent)
+	} else {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+	}
 }
