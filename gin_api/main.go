@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -22,10 +23,23 @@ var albums = []Album{
 func main() {
 	router := gin.Default()
 	router.GET("/albums", getAlbums) // pass function rather than function result
+	router.POST("/albums", postAlbums)
 	router.Run("localhost:8080")
 }
 
 // ptr to context
 func getAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
+}
+
+func postAlbums(c *gin.Context) {
+	var newAlbum Album
+
+	// pass ref
+	if e := c.BindJSON(&newAlbum); e != nil {
+		fmt.Errorf("Failed to POST: %e", e)
+	}
+
+	albums = append(albums, newAlbum)
+	c.IndentedJSON(http.StatusCreated, newAlbum)
 }
