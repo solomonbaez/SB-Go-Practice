@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
 
 type Album struct {
 	ID     string  `json:"id"`
@@ -16,5 +20,12 @@ var albums = []Album{
 }
 
 func main() {
-	fmt.Println(albums)
+	router := gin.Default()
+	router.GET("/albums", getAlbums) // pass function rather than function result
+	router.Run("localhost:8080")
+}
+
+// ptr to context
+func getAlbums(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, albums)
 }
