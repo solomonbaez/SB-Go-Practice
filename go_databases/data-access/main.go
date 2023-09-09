@@ -62,6 +62,19 @@ func main() {
 	}
 
 	fmt.Printf("Album added: %v\n", a)
+
+	e = deleteAlbum(aId)
+	if e != nil {
+		log.Fatal(e)
+	}
+
+	e = deleteAlbum(aId)
+	if e != nil {
+		log.Fatal(e)
+	}
+
+	fmt.Printf("Album deleted: %v\n", a)
+
 	fmt.Printf("Albums found: %v\n", albums)
 }
 
@@ -123,4 +136,17 @@ func addAlbum(a Album) (int64, error) {
 	}
 
 	return id, nil
+}
+
+func deleteAlbum(id int64) error {
+	var e error
+	result, e := db.Exec(
+		"DELETE FROM album WHERE id=?",
+		id,
+	)
+	if e != nil {
+		return fmt.Errorf("deleteAlbum %d: %v", result, e)
+	}
+
+	return nil
 }
