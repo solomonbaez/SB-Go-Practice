@@ -4,7 +4,10 @@ import "fmt"
 
 func main() {
 	s := "stinky"
-	fmt.Printf("%v is %v backwards!\n", StringReverse(s), s)
+	singleReverse := StringReverse(s)
+	doubleReverse := StringReverse(singleReverse)
+	fmt.Printf("%v is %v backwards!\n", singleReverse, s)
+	fmt.Printf("%v is %v backwards!\n", doubleReverse, singleReverse)
 }
 
 func StringReverse(s string) string {
