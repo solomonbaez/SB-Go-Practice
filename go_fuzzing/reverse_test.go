@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"testing"
+	"unicode/utf8"
+)
 
 func TestReverse(t *testing.T) {
 	testCases := []struct {
@@ -17,4 +20,23 @@ func TestReverse(t *testing.T) {
 			t.Errorf("Reverse: %v, want %v", reversedString, testCase.want)
 		}
 	}
+}
+
+func FuzzReverse(f *testing.F) {
+	testCases := []string{"Hello, world", " ", "!12345"}
+	for _, testCase := range testCases {
+		f.Add(testCase) // seed the fuzz
+	}
+
+	f.Fuzz(func(t *testing.T, original string) {
+		singleReverse := StringReverse(original)
+		doubleReverse := StringReverse(singleReverse)
+		if original != doubleReverse {
+			t.Errorf("Before: %v, after: %v", original, doubleReverse)
+		}
+
+		if utf8.ValidString(original) && !utf8.ValidString(singleReverse) {
+			t.Errorf("StringReverse produced invalid UTF-8 string %v", singleReverse)
+		}
+	})
 }
