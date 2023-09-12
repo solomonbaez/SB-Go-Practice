@@ -4,7 +4,7 @@ tasks:
   build:
     desc: Build
     cmds:
-    - GOFLAGS=-mod=mod go build -o bin/go-rest-api internal/main.go
+    - GOFLAGS=-mod=mod go build -o bin/go_rest_api internal/main.go
 
   run:
     desc: Run
@@ -12,10 +12,10 @@ tasks:
     - GOFLAGS=-mod=mod go run internal/main.go
 
   swagger.gen:
-    desc: Generate Go
+    desc: Generate Go code
     cmds:
-    - GOFLAGS=-mod=mod go generate github.com/scraly/learning-go-by-examples/go-rest-api/internal github.com/scraly/learning-go-by-examples/go-rest-api/pkg/swagger
-    
+    - GOFLAGS=-mod=mod go generate github.com/solomonbaez/SB-Go-Practice/go_rest_api/internal github.com/solomonbaez/SB-Go-Practice/go_rest_api/pkg/swagger
+
   swagger.validate:
     desc: Validate Go 
     cmds:
