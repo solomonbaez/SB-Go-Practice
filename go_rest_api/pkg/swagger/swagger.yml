@@ -1,0 +1,26 @@
+consumes:
+- application/json
+info:
+  description: HTTP server in Go.
+  title: go_rest_api
+  version: 0.1.0
+produces:
+- application/json
+schemes:
+- http
+swagger: "2.0"
+
+paths:
+  /health:
+    get:
+      operationId: checkHealth
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK.
+          schema:
+            type: string
+            enum:
+            - OK
+            
