@@ -31,6 +31,12 @@ func FuzzReverse(f *testing.F) {
 	f.Fuzz(func(t *testing.T, original string) {
 		singleReverse := StringReverse(original)
 		doubleReverse := StringReverse(singleReverse)
+		t.Logf("Number of runes: original=%d, reverse=%d, double-reverse=%d",
+			utf8.RuneCountInString(original),
+			utf8.RuneCountInString(singleReverse),
+			utf8.RuneCountInString(doubleReverse),
+		)
+
 		if original != doubleReverse {
 			t.Errorf("Before: %v, after: %v", original, doubleReverse)
 		}
