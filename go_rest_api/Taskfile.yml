@@ -1,0 +1,27 @@
+version: "3"
+
+tasks:
+  build:
+    desc: Build
+    cmds:
+    - GOFLAGS=-mod=mod go build -o bin/go-rest-api internal/main.go
+
+  run:
+    desc: Run
+    cmds:
+    - GOFLAGS=-mod=mod go run internal/main.go
+
+  swagger.gen:
+    desc: Generate Go
+    cmds:
+    - GOFLAGS=-mod=mod go generate github.com/scraly/learning-go-by-examples/go-rest-api/internal github.com/scraly/learning-go-by-examples/go-rest-api/pkg/swagger
+    
+  swagger.validate:
+    desc: Validate Go 
+    cmds:
+    - swagger validate pkg/swagger/swagger.yml
+
+  swagger.doc:
+    desc: Documentation
+    cmds:
+    - docker run -i yousan/swagger-yaml-to-html < pkg/swagger/swagger.yml > doc/index.html
